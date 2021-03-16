@@ -1,0 +1,64 @@
+drop table Flights;
+drop table Aircraft;
+drop table Certified;
+drop table Employees;
+
+create table Flights
+( flno integer,from_ varchar2(20), to_ varchar2(20),
+distance integer, departs date, arrives date,
+price real);
+
+create table Aircraft
+(aid integer, aname varchar2(20), cruisingrange integer);
+
+create table Certified
+(eid integer, aid integer);
+
+create table Employees
+(eid integer, ename varchar2(20), salary integer);
+
+ 
+insert into Flights(flno, from_, to_, distance, departs, arrives, price) values(1,'Los Angeles', 'Honolulu', 21000, to_date('2021-01-04 09:26', 'YYYY-MM-DD HH24:MI'), to_date('2021-01-10 11:26', 'YYYY-MM-DD HH24:MI'),4000);
+insert into Flights(flno, from_, to_, distance, departs, arrives, price) values(2,'Los Angeles', 'Honolulu', 22000, to_date('2021-01-02 14:30', 'YYYY-MM-DD HH24:MI'), to_date('2021-01-10 21:31', 'YYYY-MM-DD HH24:MI'),3500);
+insert into Flights(flno, from_, to_, distance, departs, arrives, price) values(3,'Los Angeles', 'Ottoa', 2600, to_date('2021-01-03 21:10', 'YYYY-MM-DD HH24:MI'), to_date('2021-01-04 22:15', 'YYYY-MM-DD HH24:MI'),2500);
+insert into Flights(flno, from_, to_, distance, departs, arrives, price) values(4,'Los Angeles', 'Texas', 1200, to_date('2021-01-03 11:27', 'YYYY-MM-DD HH24:MI'), to_date('2021-01-04 11:46', 'YYYY-MM-DD HH24:MI'),3000);
+insert into Flights(flno, from_, to_, distance, departs, arrives, price) values(5,'Los Angeles', 'NewYork', 2100, to_date('2021-01-02 10:26', 'YYYY-MM-DD HH24:MI'), to_date('2021-01-05 21:56', 'YYYY-MM-DD HH24:MI'),2000);
+
+
+
+insert into Aircraft(aid, aname, cruisingrange) values(1,'AirAsia',8500);
+insert into Aircraft(aid, aname, cruisingrange) values(2,'Boeing',9500);
+insert into Aircraft(aid, aname, cruisingrange) values(3,'Emirates',800);
+insert into Aircraft(aid, aname, cruisingrange) values(4,'Emirates',1100);
+insert into Aircraft(aid, aname, cruisingrange) values(5,'Boeing',1400);
+
+
+
+insert into Certified(eid, aid) values(1,5);
+insert into Certified(eid, aid) values(2,4);
+insert into Certified(eid, aid) values(3,3);
+insert into Certified(eid, aid) values(2,2);
+insert into Certified(eid, aid) values(5,1);
+
+
+
+ 
+insert into Employees(eid, ename, salary) values(1,'Rakesh',4800);
+insert into Employees(eid, ename, salary) values(2,'Sakib',7000);
+insert into Employees(eid, ename, salary) values(3,'Mahamudul',3000);
+insert into Employees(eid, ename, salary) values(4,'Razzak',5000);
+insert into Employees(eid, ename, salary) values(5,'Mashrafi',7000);
+
+
+
+
+
+Select e.ename from Employees e inner join Certified c on e.eid=c.eid
+where e.salary<(Select min(price) from Flights where from_='Los Angeles' and to_='Honolulu');
+
+Select e.ename from Employees e inner join Certified c on e.eid=c.eid
+where c.aid IN (Select aid from Aircraft where aname='Boeing');
+
+Select ename from Employees 
+where eid IN (select c.eid from Certified c inner join Aircraft a on c.aid=a.aid where a.cruisingrange>1000
+group by (c.eid) having count(c.eid)>=2);
